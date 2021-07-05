@@ -18,7 +18,7 @@ app.post("/", function (req, res) {
   var firstName = req.body.fName
   var secondName = req.body.lName
   var email = req.body.email
-
+  console.log(firstName)
   var data = {
     members: [{
       email_address: email,
@@ -27,7 +27,9 @@ app.post("/", function (req, res) {
         FNAME: firstName,
         LNAME: secondName,
 
+
       }
+
     }]
   };
   var jsonData = JSON.stringify(data)
@@ -36,12 +38,20 @@ app.post("/", function (req, res) {
     method: "POST",
     auth: "valy4:b0be3613219eb502b5507ab37dbe6ceb - us6"
   }
-  https.request(url, options, function (response) {
+  const requesT = https.request(url, options, function (response) {
+
+    if (response.statusCode === 200) {
+      res.sendFile(__dirname, "/success.html")
+    } else {
+      res.sendFile(__dirname, "/failure.html")
+    }
     response.on("data", function (data) {
-      console.log(data)
+      console.log(JSON.parse(data))
     })
 
   })
+  requesT.write(jsonData)
+  requesT.end()
 })
 
 app.listen(3000, function () {
